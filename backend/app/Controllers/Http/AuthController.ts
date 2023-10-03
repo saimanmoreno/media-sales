@@ -82,4 +82,9 @@ export default class AuthController {
             message: 'Palavra-passe redefinido com sucesso!'
         })
     }
+
+    public async logout({ auth, response }: HttpContextContract) {
+        await auth.logout()
+        return response.status(200).json({ message: 'Logout realizado com sucesso.' })
+    }
 }
