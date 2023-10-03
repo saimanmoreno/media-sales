@@ -4,7 +4,11 @@ import {
   column,
   beforeSave,
   BaseModel,
+  hasMany,
+  HasMany,
 } from '@ioc:Adonis/Lucid/Orm'
+import Notificacao from './Notificacao'
+import Proposta from './Proposta'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -17,6 +21,9 @@ export default class User extends BaseModel {
   public password: string
 
   @column()
+  public cargo: string
+
+  @column()
   public rememberMeToken?: string
 
   @column.dateTime({ autoCreate: true })
@@ -24,6 +31,16 @@ export default class User extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+   // -----------------------RELATIONSHIPS-------------------------------
+   
+  @hasMany(() => Notificacao)
+  public notificacoes: HasMany<typeof Notificacao>
+
+  @hasMany(() => Proposta)
+  public propostas: HasMany<typeof Proposta>
+
+  // ---------------------------HOOKS------------------------------------
 
   @beforeSave()
   public static async hashPassword (user: User) {
