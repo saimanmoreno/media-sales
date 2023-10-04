@@ -69,6 +69,7 @@ export default class AuthController {
         })
     }
 
+    /* CORRIGIR ISSO DEPOIS
     async resetPassword({ request, response, auth }) {
 
         const user = await auth.authenticate();
@@ -82,9 +83,14 @@ export default class AuthController {
             message: 'Palavra-passe redefinido com sucesso!'
         })
     }
+    */
 
     public async logout({ auth, response }: HttpContextContract) {
+
         await auth.logout()
-        return response.status(200).json({ message: 'Logout realizado com sucesso.' })
+
+        return response.status(200).json({
+            message: 'Logout realizado com sucesso.'
+        })
     }
 }

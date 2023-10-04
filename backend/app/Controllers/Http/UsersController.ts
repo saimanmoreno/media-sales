@@ -12,7 +12,7 @@ export default class UsersController {
 
     public async show({ params }: HttpContextContract) {
 
-        const user = await User.find(params.id);
+        const user = await User.findOrFail(params.id);
 
         return user;
     }
@@ -21,6 +21,10 @@ export default class UsersController {
 
         const data = request.only(['email', 'password', 'cargo']);
 
+        /**
+         * TODO: ao criar o user deve ser enviado o link para o email registado para definir a password
+         */
+
         const user = await User.create(data);
 
         return user;
@@ -28,7 +32,7 @@ export default class UsersController {
 
     public async update({ params, request }: HttpContextContract) {
 
-        const data = request.only(['email', 'password', 'cargo']);
+        const data = request.only(['email', 'cargo']);
 
         const user = await User.findOrFail(params.id);
 
@@ -38,12 +42,28 @@ export default class UsersController {
         return user;
     }
 
-    public async destroy({ params }: HttpContextContract) {
+    public async destroy({ response, params, auth }: HttpContextContract) {
 
         const user = await User.findOrFail(params.id);
 
+        // Verifique se o usuário autenticado é um administrador
+        const isAdmin = auth.user?.cargo === 'admin';
+
+        // Verifique se o usuário autenticado não está tentando remover a si mesmo
+        const isSelfRemoval = auth.user?.id === user.id;
+
+        // Se o usuário não for um administrador ou estiver tentando remover a si mesmo, retorne um erro
+        if (isSelfRemoval) {
+            return response.status(403).json({ error: 'Não podes remover a si mesmo maluco!' });
+        }
+
+        if (!isAdmin) {
+            return response.status(403).json({ error: 'Acesso não autorizado.' });
+        }
+
         await user.delete();
 
-        return { message: 'Usuário excluído com sucesso.' };
+        return { message: 'Usuário removido com sucesso.' };
     }
+
 }
