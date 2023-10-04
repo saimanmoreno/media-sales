@@ -24,6 +24,7 @@ export default class NotificacoesController {
     const notificacao = await Notificacao.create(data);
 
     return notificacao;
+    
   }
 
   public async update({ params, request }: HttpContextContract) {

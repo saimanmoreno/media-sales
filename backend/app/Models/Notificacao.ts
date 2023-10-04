@@ -25,7 +25,10 @@ export default class Notificacao extends BaseModel {
   public updatedAt: DateTime
 
   // -----------------------RELATIONSHIPS-------------------------------
-  
+
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
+
+  // Define o nome da tabela associada a este modelo
+  public static table = 'notificacoes'
 }
